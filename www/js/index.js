@@ -50,7 +50,8 @@ var app = {
     }
 };
 
-var ws = WS(wsServer);
+var ws = WS(wsServer),
+    touching = null;
 
 $(document).ready(function(){
     ws.opened.then(function(){
@@ -58,25 +59,23 @@ $(document).ready(function(){
             deviceType: "guest"
         });
     });
+
+    $("body").on("touchstart mousedown", function(){
+        touching = navigator.accelerometer.watchAcceleration(
+            function(accel){
+                sendOrientation(accel);
+            }, 
+            function(){
+                console.log("PANIC");
+            }, {
+                frequency:250
+            });
+    });
+
+    $("body").on("touchend mouseup", function(){
+        navigator.accelerometer.clearWatch(touching);
+    });
 });
-
-var touching = null;
-
-addEventListener("touchstart", function(){
-    touching = navigator.accelerometer.watchAcceleration(
-        function(accel){
-            sendOrientation(accel);
-        }, 
-        function(){
-            console.log("PANIC");
-        }, {
-            frequency:250
-        });
-}, false);
-
-addEventListener("touchend", function(){
-    navigator.accelerometer.clearWatch(touching);
-}, false);
 
 function sendOrientation(accel){
     ws.send("setOrientation",{
