@@ -5,3 +5,8 @@ Phonegap app for communicating with theremintalist server
 `phonegap platform add android`
 
 `phonegap platform add ios`
+
+`bower install`
+
+`phonegap serve` or `phonegap run android` to fire up on device/emulator
+
