@@ -1,4 +1,4 @@
-var wsServer = "ws://192.168.1.184:8080/";
+var wsServer = "ws://172.31.253.10:8080/";
 
 var ws = WS(wsServer),
     touching = null;
@@ -21,17 +21,6 @@ var app = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
-
-        touching = navigator.accelerometer.watchAcceleration(
-            function(accel){
-                sendOrientation(accel);
-            }, 
-            function(){
-                console.log("PANIC");
-            }, {
-                frequency:250
-            });
-
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -51,6 +40,23 @@ $(document).ready(function(){
         ws.send("setClientDeviceType",{
             deviceType: "guest"
         });
+    });
+
+    $("button.play").on("touchstart mousedown", function(){
+        console.log("no touch start?");
+        touching = navigator.accelerometer.watchAcceleration(
+            function(accel){
+                sendOrientation(accel);
+            }, 
+            function(){
+                console.log("PANIC");
+            }, {
+                frequency:250
+            });
+    });
+
+    $(document).on('touchstart', function(e){
+        console.log(e);
     });
 });
 
